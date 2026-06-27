@@ -1,0 +1,27 @@
+[
+  {
+    "id": 1,
+    "text": "My payment failed during checkout.",
+    "expected_category": "Billing"
+  },
+  {
+    "id": 2,
+    "text": "I was charged twice for my order.",
+    "expected_category": "Billing"
+  },
+  {
+    "id": 3,
+    "text": "Please refund my purchase.",
+    "expected_category": "Refund"
+  },
+  {
+    "id": 4,
+    "text": "I want my money back.",
+    "expected_category": "Refund"
+  },
+  {
+    "id": 5,
+    "text": "My package has not arrived.",
+    "expected_category": "Shipping"
+  }
+]
