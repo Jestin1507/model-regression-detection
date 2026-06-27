@@ -1,13 +1,15 @@
 """
 Evaluator
 
-Runs the golden dataset through the classifier
-and stores predictions in reports/json/evaluation_results.json
+Runs the golden dataset through the selected LLM
+and stores evaluation results.
 """
 
 from pathlib import Path
+from datetime import datetime
 
 from app.classifier import TicketClassifier
+from app.config import LLM_PROVIDER, GEMINI_MODEL, GROQ_MODEL
 from utils.file_manager import FileManager
 
 
@@ -21,7 +23,6 @@ class Evaluator:
             "reports/json/evaluation_results.json"
         )
 
-        # Create the classifier only once
         self.classifier = TicketClassifier()
 
     def evaluate(self):
@@ -29,6 +30,12 @@ class Evaluator:
         dataset = FileManager.load_json(self.dataset_path)
 
         results = []
+
+        model_name = (
+            GEMINI_MODEL
+            if LLM_PROVIDER == "gemini"
+            else GROQ_MODEL
+        )
 
         print("=" * 80)
         print(f"Running evaluation on {len(dataset)} samples...")
@@ -38,30 +45,43 @@ class Evaluator:
 
             prediction = self.classifier.classify(sample["text"])
 
-            result = {
+            record = {
+
                 "id": index,
+
+                "provider": LLM_PROVIDER,
+
+                "model": model_name,
+
+                "timestamp": datetime.now().isoformat(),
+
+                "prompt_version": "v1",
+
                 "text": sample["text"],
+
                 "expected": sample["expected_category"],
+
                 "predicted": prediction,
+
                 "correct": prediction == sample["expected_category"],
             }
 
-            results.append(result)
+            results.append(record)
 
-            status = "✅" if result["correct"] else "❌"
+            status = "✅" if record["correct"] else "❌"
 
             print(
                 f"[{index:02d}/{len(dataset)}] "
                 f"{status} "
-                f"Expected: {sample['expected_category']:<20}"
-                f"Predicted: {prediction}"
+                f"Expected: {record['expected']:<20}"
+                f"Predicted: {record['predicted']}"
             )
 
         FileManager.save_json(
             self.output_file,
-            results
+            results,
         )
 
-        print("\nEvaluation results saved successfully!")
+        print("\nEvaluation results saved.")
 
         return results

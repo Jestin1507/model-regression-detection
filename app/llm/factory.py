@@ -1,8 +1,5 @@
 from app.config import LLM_PROVIDER
 
-from app.llm.gemini_client import GeminiClient
-from app.llm.groq_client import GroqClient
-
 
 class LLMFactory:
 
@@ -10,11 +7,11 @@ class LLMFactory:
     def get_client():
 
         if LLM_PROVIDER == "gemini":
+            from app.llm.gemini_client import GeminiClient
             return GeminiClient()
 
-        if LLM_PROVIDER == "groq":
+        elif LLM_PROVIDER == "groq":
+            from app.llm.groq_client import GroqClient
             return GroqClient()
 
-        raise ValueError(
-            f"Unsupported provider: {LLM_PROVIDER}"
-        )
+        raise ValueError(f"Unsupported provider: {LLM_PROVIDER}")
