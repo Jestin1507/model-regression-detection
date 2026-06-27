@@ -1,28 +1,37 @@
+"""
+Application configuration.
+"""
+
+import os
 from pathlib import Path
 from dotenv import load_dotenv
-import os
 
-# Load environment variables from .env
 load_dotenv()
 
-# -----------------------------
+# -------------------------------
 # Project Paths
-# -----------------------------
+# -------------------------------
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
-PROMPTS_DIR = PROJECT_ROOT / "app" / "prompts"
-DATASET_DIR = PROJECT_ROOT / "datasets"
-REPORTS_DIR = PROJECT_ROOT / "reports"
+APP_DIR = PROJECT_ROOT / "app"
 
-# -----------------------------
-# LLM Configuration
-# -----------------------------
-
-MODEL_NAME = os.getenv("MODEL_NAME", "gemini-2.5-flash")
-
-TEMPERATURE = float(os.getenv("TEMPERATURE", 0))
-
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
+PROMPTS_DIR = APP_DIR / "prompts"
 
 CURRENT_PROMPT = PROMPTS_DIR / "current.txt"
+
+# -------------------------------
+# LLM Configuration
+# -------------------------------
+
+LLM_PROVIDER = os.getenv("LLM_PROVIDER", "gemini").lower()
+
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+
+# Models
+
+GEMINI_MODEL = "gemini-2.5-flash"
+
+GROQ_MODEL = "llama-3.1-8b-instant"
