@@ -1,19 +1,21 @@
 """
-Regression Detection Engine
-
-Stores evaluation history and detects if model performance
-has improved or regressed.
+Regression Detection
 """
 
 import json
 from pathlib import Path
 from datetime import datetime
 
+from app.config import LLM_PROVIDER
+
 
 class RegressionDetector:
 
     def __init__(self):
-        self.history_file = Path("evaluation/history.json")
+
+        self.history_file = Path(
+            "reports/json/comparison_history.json"
+        )
 
     def _load_history(self):
 
@@ -21,7 +23,12 @@ class RegressionDetector:
             return []
 
         try:
-            with open(self.history_file, "r", encoding="utf-8") as f:
+
+            with open(
+                self.history_file,
+                "r",
+                encoding="utf-8",
+            ) as f:
 
                 content = f.read().strip()
 
@@ -30,51 +37,81 @@ class RegressionDetector:
 
                 return json.loads(content)
 
-        except json.JSONDecodeError:
+        except Exception:
+
             return []
 
     def _save_history(self, history):
 
-        with open(self.history_file, "w", encoding="utf-8") as f:
-            json.dump(history, f, indent=4)
+        self.history_file.parent.mkdir(
+            parents=True,
+            exist_ok=True,
+        )
 
-    def check(self, accuracy):
+        with open(
+            self.history_file,
+            "w",
+            encoding="utf-8",
+        ) as f:
+
+            json.dump(
+                history,
+                f,
+                indent=4,
+            )
+
+    def check(
+        self,
+        accuracy,
+        prompt_version="current",
+    ):
 
         history = self._load_history()
-
-        current = {
-            "run": len(history) + 1,
-            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "accuracy": round(float(accuracy), 4),
-        }
 
         print("\n")
         print("=" * 80)
         print("REGRESSION DETECTION")
         print("=" * 80)
 
-        if len(history) == 0:
-
-            print("✅ First evaluation run.")
-            print("History created.")
-
-        else:
+        if history:
 
             previous = history[-1]["accuracy"]
 
-            print(f"Previous Accuracy : {previous:.2%}")
-            print(f"Current Accuracy  : {accuracy:.2%}")
+            print(
+                f"Previous Accuracy : {previous:.2%}"
+            )
 
-            if accuracy > previous:
-                print("\n📈 MODEL IMPROVED")
+            print(
+                f"Current Accuracy  : {accuracy:.2%}"
+            )
 
-            elif accuracy < previous:
+            if accuracy < previous:
+
                 print("\n🚨 REGRESSION DETECTED")
 
+            elif accuracy > previous:
+
+                print("\n✅ IMPROVEMENT DETECTED")
+
             else:
+
                 print("\n➖ No Change")
 
-        history.append(current)
+        else:
+
+            print("✅ First evaluation run.")
+
+        history.append({
+
+            "timestamp": datetime.now().isoformat(),
+
+            "provider": LLM_PROVIDER,
+
+            "prompt": prompt_version,
+
+            "accuracy": accuracy,
+
+        })
 
         self._save_history(history)
 

@@ -1,22 +1,44 @@
+import argparse
 from pathlib import Path
 
+from evaluation.report_generator import ReportGenerator
 from evaluation.evaluator import Evaluator
 from evaluation.metrics import MetricsEngine
 from evaluation.regression import RegressionDetector
 
-# Dataset location
+# -------------------------------
+# Command Line Arguments
+# -------------------------------
+
+parser = argparse.ArgumentParser()
+
+parser.add_argument(
+    "--prompt",
+    default="current",
+    help="Prompt version (current, v1, v2, ...)"
+)
+
+args = parser.parse_args()
+
+# -------------------------------
+# Dataset
+# -------------------------------
+
 DATASET = Path("datasets/golden_dataset.json")
 
 # -------------------------------
-# Run Evaluation
+# Evaluation
 # -------------------------------
 
-evaluator = Evaluator(DATASET)
+evaluator = Evaluator(
+    DATASET,
+    prompt_name=args.prompt,
+)
 
 results = evaluator.evaluate()
 
 # -------------------------------
-# Calculate Metrics
+# Metrics
 # -------------------------------
 
 metrics = MetricsEngine.calculate(results)
@@ -40,4 +62,9 @@ print(metrics["confusion_matrix"])
 
 detector = RegressionDetector()
 
-detector.check(metrics["accuracy"])
+detector.check(
+    metrics["accuracy"],
+    prompt_version=args.prompt,
+)
+report = ReportGenerator()
+report.generate()

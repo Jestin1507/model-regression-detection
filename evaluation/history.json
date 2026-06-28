@@ -3,5 +3,20 @@
         "run": 1,
         "timestamp": "2026-06-27 19:43:24",
         "accuracy": 1.0
+    },
+    {
+        "run": 2,
+        "timestamp": "2026-06-27 19:49:28",
+        "accuracy": 1.0
+    },
+    {
+        "run": 3,
+        "timestamp": "2026-06-27 19:50:02",
+        "accuracy": 1.0
+    },
+    {
+        "run": 4,
+        "timestamp": "2026-06-27 19:50:28",
+        "accuracy": 0.0
     }
 ]

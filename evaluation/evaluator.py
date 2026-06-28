@@ -1,21 +1,27 @@
 """
 Evaluator
-
-Runs the golden dataset through the selected LLM
-and stores evaluation results.
 """
 
 from pathlib import Path
 from datetime import datetime
 
 from app.classifier import TicketClassifier
-from app.config import LLM_PROVIDER, GEMINI_MODEL, GROQ_MODEL
+from app.config import (
+    LLM_PROVIDER,
+    GEMINI_MODEL,
+    GROQ_MODEL,
+)
+
 from utils.file_manager import FileManager
 
 
 class Evaluator:
 
-    def __init__(self, dataset_path):
+    def __init__(
+        self,
+        dataset_path,
+        prompt_name="current",
+    ):
 
         self.dataset_path = Path(dataset_path)
 
@@ -23,11 +29,17 @@ class Evaluator:
             "reports/json/evaluation_results.json"
         )
 
-        self.classifier = TicketClassifier()
+        self.classifier = TicketClassifier(
+            prompt_name=prompt_name,
+        )
+
+        self.prompt_name = prompt_name
 
     def evaluate(self):
 
-        dataset = FileManager.load_json(self.dataset_path)
+        dataset = FileManager.load_json(
+            self.dataset_path
+        )
 
         results = []
 
@@ -38,12 +50,19 @@ class Evaluator:
         )
 
         print("=" * 80)
-        print(f"Running evaluation on {len(dataset)} samples...")
+        print(
+            f"Evaluating Prompt: {self.prompt_name}"
+        )
         print("=" * 80)
 
-        for index, sample in enumerate(dataset, start=1):
+        for index, sample in enumerate(
+            dataset,
+            start=1,
+        ):
 
-            prediction = self.classifier.classify(sample["text"])
+            prediction = self.classifier.classify(
+                sample["text"]
+            )
 
             record = {
 
@@ -53,35 +72,33 @@ class Evaluator:
 
                 "model": model_name,
 
-                "timestamp": datetime.now().isoformat(),
+                "prompt_version": self.prompt_name,
 
-                "prompt_version": "v1",
+                "timestamp": datetime.now().isoformat(),
 
                 "text": sample["text"],
 
-                "expected": sample["expected_category"],
+                "expected": sample[
+                    "expected_category"
+                ],
 
                 "predicted": prediction,
 
-                "correct": prediction == sample["expected_category"],
+                "correct": prediction
+                == sample["expected_category"],
             }
 
             results.append(record)
 
-            status = "✅" if record["correct"] else "❌"
-
             print(
-                f"[{index:02d}/{len(dataset)}] "
-                f"{status} "
-                f"Expected: {record['expected']:<20}"
-                f"Predicted: {record['predicted']}"
+                f"[{index}/{len(dataset)}] "
+                f"{'✅' if record['correct'] else '❌'} "
+                f"{record['predicted']}"
             )
 
         FileManager.save_json(
             self.output_file,
             results,
         )
-
-        print("\nEvaluation results saved.")
 
         return results
