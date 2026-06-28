@@ -24,7 +24,7 @@ CURRENT_PROMPT = "current"
 # LLM Configuration
 # -------------------------------
 
-LLM_PROVIDER = os.getenv("LLM_PROVIDER", "gemini").lower()
+LLM_PROVIDER = os.getenv("LLM_PROVIDER", "groq").lower()
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
