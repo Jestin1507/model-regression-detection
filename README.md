@@ -377,26 +377,31 @@ Dashboard Visualization
 
 ---
 
-# 📸 Dashboard Preview
+## 📷 Dashboard Screenshots
 
-Add screenshots here.
+<p align="center">
+  <img src="assets/overview.png" width="900">
+</p>
 
-```
-dashboard/screenshots/
+<p align="center">
+  <img src="assets/analytics.png" width="900">
+</p>
 
-overview.png
+<p align="center">
+  <img src="assets/regression.png" width="900">
+</p>
 
-analytics.png
+<p align="center">
+  <img src="assets/history.png" width="900">
+</p>
 
-regression.png
+<p align="center">
+  <img src="assets/reports.png" width="900">
+</p>
 
-history.png
-
-reports.png
-
-about.png
-```
-
+<p align="center">
+  <img src="assets/about.png" width="900">
+</p>
 ---
 
 # 📌 Future Improvements
