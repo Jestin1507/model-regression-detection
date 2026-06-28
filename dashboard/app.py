@@ -1,3 +1,5 @@
+import subprocess
+import os
 from pathlib import Path
 import json
 
@@ -5,6 +7,28 @@ import pandas as pd
 import streamlit as st
 import plotly.express as px
 import plotly.graph_objects as go
+
+
+# ==========================================================
+# AUTO GENERATE REPORTS IF MISSING
+# ==========================================================
+
+report_file = Path("reports/json/evaluation_results.json")
+
+if not report_file.exists():
+    os.makedirs("reports/json", exist_ok=True)
+    os.makedirs("reports/html", exist_ok=True)
+    os.makedirs("reports/csv", exist_ok=True)
+
+    subprocess.run(
+        ["python", "run_evaluation.py"],
+        check=True
+    )
+
+    subprocess.run(
+        ["python", "run_prompt_comparison.py"],
+        check=True
+    )
 
 # ==========================================================
 # PAGE CONFIG
