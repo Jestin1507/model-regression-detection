@@ -1,12 +1,10 @@
 """
-Regression Detection
+Regression Detection Engine
 """
 
-import json
 from pathlib import Path
 from datetime import datetime
-
-from app.config import LLM_PROVIDER
+import json
 
 
 class RegressionDetector:
@@ -17,9 +15,16 @@ class RegressionDetector:
             "reports/json/comparison_history.json"
         )
 
+        self.threshold = 0.03
+
+    # ----------------------------------------------------
+
     def _load_history(self):
 
         if not self.history_file.exists():
+            return []
+
+        if self.history_file.stat().st_size == 0:
             return []
 
         try:
@@ -30,16 +35,13 @@ class RegressionDetector:
                 encoding="utf-8",
             ) as f:
 
-                content = f.read().strip()
+                return json.load(f)
 
-                if not content:
-                    return []
-
-                return json.loads(content)
-
-        except Exception:
+        except json.JSONDecodeError:
 
             return []
+
+    # ----------------------------------------------------
 
     def _save_history(self, history):
 
@@ -60,59 +62,111 @@ class RegressionDetector:
                 indent=4,
             )
 
+    # ----------------------------------------------------
+
     def check(
         self,
         accuracy,
-        prompt_version="current",
+        provider,
+        prompt_version,
     ):
 
         history = self._load_history()
 
         print("\n")
         print("=" * 80)
-        print("REGRESSION DETECTION")
+        print("MODEL REGRESSION DETECTION")
         print("=" * 80)
+
+        previous_accuracy = accuracy
+        change = 0
+        regression = False
+        status = "Baseline"
 
         if history:
 
-            previous = history[-1]["accuracy"]
+            previous_accuracy = history[-1]["accuracy"]
 
-            print(
-                f"Previous Accuracy : {previous:.2%}"
-            )
+            change = accuracy - previous_accuracy
 
-            print(
-                f"Current Accuracy  : {accuracy:.2%}"
-            )
+            regression = change < -self.threshold
 
-            if accuracy < previous:
+            if regression:
 
-                print("\n🚨 REGRESSION DETECTED")
+                status = "Regression"
 
-            elif accuracy > previous:
+            elif change > 0:
 
-                print("\n✅ IMPROVEMENT DETECTED")
+                status = "Improved"
+
+            elif change == 0:
+
+                status = "No Change"
 
             else:
 
-                print("\n➖ No Change")
+                status = "Healthy"
 
-        else:
+        current = {
 
-            print("✅ First evaluation run.")
+            "evaluation_id": len(history) + 1,
 
-        history.append({
+            "timestamp": datetime.now().strftime(
+                "%Y-%m-%d %H:%M:%S"
+            ),
 
-            "timestamp": datetime.now().isoformat(),
-
-            "provider": LLM_PROVIDER,
+            "provider": provider,
 
             "prompt": prompt_version,
 
-            "accuracy": accuracy,
+            "accuracy": round(accuracy, 4),
 
-        })
+            "previous_accuracy": round(previous_accuracy, 4),
+
+            "change": round(change, 4),
+
+            "threshold": self.threshold,
+
+            "regression": regression,
+
+            "status": status,
+
+        }
+
+        history.append(current)
 
         self._save_history(history)
 
-        print("\nHistory saved successfully.")
+        print(f"Provider            : {provider}")
+        print(f"Prompt Version      : {prompt_version}")
+        print(f"Previous Accuracy   : {previous_accuracy:.2%}")
+        print(f"Current Accuracy    : {accuracy:.2%}")
+        print(f"Accuracy Change     : {change:.2%}")
+        print(f"Threshold           : {self.threshold:.2%}")
+        print(f"Regression Status   : {status}")
+
+        print("-" * 80)
+
+        if regression:
+
+            print("🚨 REGRESSION DETECTED")
+
+        elif status == "Improved":
+
+            print("📈 MODEL IMPROVED")
+
+        elif status == "No Change":
+
+            print("➖ NO CHANGE")
+
+        elif status == "Healthy":
+
+            print("🟢 WITHIN ACCEPTABLE RANGE")
+
+        else:
+
+            print("📌 BASELINE CREATED")
+
+        print("-" * 80)
+
+        return current

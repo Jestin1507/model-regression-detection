@@ -18,7 +18,7 @@ APP_DIR = PROJECT_ROOT / "app"
 
 PROMPTS_DIR = APP_DIR / "prompts"
 
-CURRENT_PROMPT = PROMPTS_DIR / "current.txt"
+CURRENT_PROMPT = "current"
 
 # -------------------------------
 # LLM Configuration

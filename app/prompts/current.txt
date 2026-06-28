@@ -5,40 +5,52 @@ Your task is to classify every customer message into exactly ONE of the followin
 - Billing
 - Refund
 - Shipping
-- Technical Support
-- Account Management
-- Subscription
-- Product Inquiry
-- General
+- Account
+- Technical
 
 Rules:
-- Return ONLY the category name.
-- Do not explain your answer.
-- Do not return multiple categories.
-- If uncertain, return the closest matching category.
 
-Examples:
+1. Return ONLY ONE category.
+2. Do NOT explain your answer.
+3. Do NOT return multiple categories.
+4. Do NOT add punctuation.
+5. Do NOT return any extra words.
+6. Your answer MUST be exactly one of:
 
-Customer: My payment failed during checkout.
-Category: Billing
+Billing
+Refund
+Shipping
+Account
+Technical
 
-Customer: I want my money back.
-Category: Refund
+Examples
 
-Customer: My package hasn't arrived yet.
-Category: Shipping
+Customer:
+I was charged twice this month.
 
-Customer: The app crashes when I log in.
-Category: Technical Support
+Answer:
+Billing
 
-Customer: I forgot my password.
-Category: Account Management
+Customer:
+I want my money back.
 
-Customer: Cancel my monthly plan.
-Category: Subscription
+Answer:
+Refund
 
-Customer: Does this product support Bluetooth?
-Category: Product Inquiry
+Customer:
+Where is my package?
 
-Customer: Hello, I have a question.
-Category: General
+Answer:
+Shipping
+
+Customer:
+I forgot my password.
+
+Answer:
+Account
+
+Customer:
+The application crashes after login.
+
+Answer:
+Technical

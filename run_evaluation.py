@@ -1,70 +1,100 @@
-import argparse
+"""
+Run Complete LLM Evaluation Pipeline
+"""
+
 from pathlib import Path
 
-from evaluation.report_generator import ReportGenerator
+from app.config import (
+    LLM_PROVIDER,
+    CURRENT_PROMPT,
+)
+
 from evaluation.evaluator import Evaluator
 from evaluation.metrics import MetricsEngine
 from evaluation.regression import RegressionDetector
 
-# -------------------------------
-# Command Line Arguments
-# -------------------------------
+# ==========================================================
+# DATASET
+# ==========================================================
 
-parser = argparse.ArgumentParser()
-
-parser.add_argument(
-    "--prompt",
-    default="current",
-    help="Prompt version (current, v1, v2, ...)"
+DATASET = Path(
+    "datasets/golden_dataset.json"
 )
 
-args = parser.parse_args()
-
-# -------------------------------
-# Dataset
-# -------------------------------
-
-DATASET = Path("datasets/golden_dataset.json")
-
-# -------------------------------
-# Evaluation
-# -------------------------------
+# ==========================================================
+# EVALUATION
+# ==========================================================
 
 evaluator = Evaluator(
-    DATASET,
-    prompt_name=args.prompt,
+
+    dataset_path=DATASET,
+
+    prompt_name=CURRENT_PROMPT,
+
 )
 
 results = evaluator.evaluate()
 
-# -------------------------------
-# Metrics
-# -------------------------------
+# ==========================================================
+# METRICS
+# ==========================================================
 
-metrics = MetricsEngine.calculate(results)
+metrics = MetricsEngine.calculate(
+    results
+)
+
+accuracy = metrics["accuracy"]
 
 print("\n")
 print("=" * 80)
-print("MODEL METRICS")
+print("MODEL EVALUATION SUMMARY")
 print("=" * 80)
 
-print(f"\nAccuracy : {metrics['accuracy']:.2%}\n")
+print(f"\nProvider : {LLM_PROVIDER}")
+
+print(f"Prompt   : {CURRENT_PROMPT}")
+
+print(f"Accuracy : {accuracy:.2%}\n")
 
 print(metrics["classification_report"])
 
-print("Confusion Matrix\n")
+print("\nConfusion Matrix\n")
 
 print(metrics["confusion_matrix"])
 
-# -------------------------------
-# Regression Detection
-# -------------------------------
+# ==========================================================
+# REGRESSION DETECTION
+# ==========================================================
 
 detector = RegressionDetector()
 
-detector.check(
-    metrics["accuracy"],
-    prompt_version=args.prompt,
+summary = detector.check(
+
+    accuracy=accuracy,
+
+    provider=LLM_PROVIDER,
+
+    prompt_version=CURRENT_PROMPT,
+
 )
-report = ReportGenerator()
-report.generate()
+
+# ==========================================================
+# FINAL SUMMARY
+# ==========================================================
+
+print("\n")
+print("=" * 80)
+print("FINAL RESULT")
+print("=" * 80)
+
+print(f"Status    : {summary['status']}")
+
+print(f"Provider  : {summary['provider']}")
+
+print(f"Prompt    : {summary['prompt']}")
+
+print(f"Accuracy  : {summary['accuracy']:.2%}")
+
+print(f"Change    : {summary['change']:.2%}")
+
+print("=" * 80)

@@ -35,6 +35,8 @@ class Evaluator:
 
         self.prompt_name = prompt_name
 
+    # --------------------------------------------------
+
     def evaluate(self):
 
         dataset = FileManager.load_json(
@@ -49,19 +51,29 @@ class Evaluator:
             else GROQ_MODEL
         )
 
+        total = len(dataset)
+
         print("=" * 80)
-        print(
-            f"Evaluating Prompt: {self.prompt_name}"
-        )
+        print(f"Evaluating Prompt : {self.prompt_name}")
+        print(f"Provider          : {LLM_PROVIDER}")
+        print(f"Dataset Size      : {total}")
         print("=" * 80)
 
-        for index, sample in enumerate(
-            dataset,
-            start=1,
-        ):
+        for index, sample in enumerate(dataset, start=1):
 
-            prediction = self.classifier.classify(
-                sample["text"]
+            question = sample["question"]
+
+            expected = sample["expected"]
+
+            prediction = (
+                self.classifier
+                .classify(question)
+                .strip()
+            )
+
+            correct = (
+                prediction.lower()
+                == expected.lower()
             )
 
             record = {
@@ -76,29 +88,48 @@ class Evaluator:
 
                 "timestamp": datetime.now().isoformat(),
 
-                "text": sample["text"],
+                "category": sample["category"],
 
-                "expected": sample[
-                    "expected_category"
-                ],
+                "difficulty": sample["difficulty"],
+
+                "question": question,
+
+                "expected": expected,
 
                 "predicted": prediction,
 
-                "correct": prediction
-                == sample["expected_category"],
+                "correct": correct,
+
             }
 
             results.append(record)
 
+            status = "✅" if correct else "❌"
+
             print(
-                f"[{index}/{len(dataset)}] "
-                f"{'✅' if record['correct'] else '❌'} "
-                f"{record['predicted']}"
+                f"[{index:02d}/{total}] "
+                f"{status} "
+                f"{sample['category']:<12}"
+                f"{prediction}"
             )
 
         FileManager.save_json(
             self.output_file,
             results,
         )
+
+        correct_predictions = sum(
+            r["correct"] for r in results
+        )
+
+        print("\n" + "=" * 80)
+        print("EVALUATION COMPLETED")
+        print("=" * 80)
+
+        print(f"Samples Evaluated : {total}")
+        print(f"Correct           : {correct_predictions}")
+        print(f"Incorrect         : {total - correct_predictions}")
+
+        print("=" * 80)
 
         return results
