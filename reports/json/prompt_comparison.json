@@ -1,0 +1,134 @@
+[
+    {
+        "provider": "groq",
+        "prompt": "current",
+        "accuracy": 0.98,
+        "change": 0,
+        "status": "PASS",
+        "category_metrics": [
+            {
+                "category": "Account",
+                "total": 10,
+                "correct": 10,
+                "incorrect": 0,
+                "accuracy": 100.0
+            },
+            {
+                "category": "Billing",
+                "total": 10,
+                "correct": 9,
+                "incorrect": 1,
+                "accuracy": 90.0
+            },
+            {
+                "category": "Refund",
+                "total": 10,
+                "correct": 10,
+                "incorrect": 0,
+                "accuracy": 100.0
+            },
+            {
+                "category": "Shipping",
+                "total": 10,
+                "correct": 10,
+                "incorrect": 0,
+                "accuracy": 100.0
+            },
+            {
+                "category": "Technical",
+                "total": 10,
+                "correct": 10,
+                "incorrect": 0,
+                "accuracy": 100.0
+            }
+        ]
+    },
+    {
+        "provider": "groq",
+        "prompt": "v1",
+        "accuracy": 0.98,
+        "change": 0.0,
+        "status": "PASS",
+        "category_metrics": [
+            {
+                "category": "Account",
+                "total": 10,
+                "correct": 10,
+                "incorrect": 0,
+                "accuracy": 100.0
+            },
+            {
+                "category": "Billing",
+                "total": 10,
+                "correct": 9,
+                "incorrect": 1,
+                "accuracy": 90.0
+            },
+            {
+                "category": "Refund",
+                "total": 10,
+                "correct": 10,
+                "incorrect": 0,
+                "accuracy": 100.0
+            },
+            {
+                "category": "Shipping",
+                "total": 10,
+                "correct": 10,
+                "incorrect": 0,
+                "accuracy": 100.0
+            },
+            {
+                "category": "Technical",
+                "total": 10,
+                "correct": 10,
+                "incorrect": 0,
+                "accuracy": 100.0
+            }
+        ]
+    },
+    {
+        "provider": "groq",
+        "prompt": "v2",
+        "accuracy": 0.96,
+        "change": -0.02,
+        "status": "PASS",
+        "category_metrics": [
+            {
+                "category": "Account",
+                "total": 10,
+                "correct": 10,
+                "incorrect": 0,
+                "accuracy": 100.0
+            },
+            {
+                "category": "Billing",
+                "total": 10,
+                "correct": 9,
+                "incorrect": 1,
+                "accuracy": 90.0
+            },
+            {
+                "category": "Refund",
+                "total": 10,
+                "correct": 9,
+                "incorrect": 1,
+                "accuracy": 90.0
+            },
+            {
+                "category": "Shipping",
+                "total": 10,
+                "correct": 10,
+                "incorrect": 0,
+                "accuracy": 100.0
+            },
+            {
+                "category": "Technical",
+                "total": 10,
+                "correct": 10,
+                "incorrect": 0,
+                "accuracy": 100.0
+            }
+        ]
+    }
+]

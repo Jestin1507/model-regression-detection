@@ -1,0 +1,62 @@
+[
+    {
+        "evaluation_id": 1,
+        "timestamp": "2026-06-28 13:34:19",
+        "provider": "groq",
+        "prompt": "current",
+        "accuracy": 0.98,
+        "previous_accuracy": 0.98,
+        "change": 0,
+        "threshold": 0.03,
+        "regression": false,
+        "status": "Baseline"
+    },
+    {
+        "evaluation_id": 2,
+        "timestamp": "2026-06-28 16:05:13",
+        "provider": "groq",
+        "prompt": "current",
+        "accuracy": 0.98,
+        "previous_accuracy": 0.98,
+        "change": 0.0,
+        "threshold": 0.03,
+        "regression": false,
+        "status": "No Change"
+    },
+    {
+        "evaluation_id": 3,
+        "timestamp": "2026-06-28 19:25:37",
+        "provider": "groq",
+        "prompt": "current",
+        "accuracy": 0.98,
+        "previous_accuracy": 0.98,
+        "change": 0.0,
+        "threshold": 0.03,
+        "regression": false,
+        "status": "No Change"
+    },
+    {
+        "evaluation_id": 4,
+        "timestamp": "2026-06-29 14:50:35",
+        "provider": "groq",
+        "prompt": "current",
+        "accuracy": 0.98,
+        "previous_accuracy": 0.98,
+        "change": 0.0,
+        "threshold": 0.03,
+        "regression": false,
+        "status": "No Change"
+    },
+    {
+        "evaluation_id": 5,
+        "timestamp": "2026-06-29 15:06:56",
+        "provider": "groq",
+        "prompt": "current",
+        "accuracy": 0.98,
+        "previous_accuracy": 0.98,
+        "change": 0.0,
+        "threshold": 0.03,
+        "regression": false,
+        "status": "No Change"
+    }
+]
