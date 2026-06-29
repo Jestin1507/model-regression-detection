@@ -5,6 +5,7 @@ An enterprise-grade **LLMOps platform** for evaluating Large Language Models (LL
 This project automates the complete evaluation pipeline—from dataset testing to regression analysis and report generation—helping ensure consistent model quality before deployment.
 
 ---
+DEMO: https://model-regression-detection-5gn846yxu6z3xjez4pqfce.streamlit.app/
 
 # 🚀 Features
 
